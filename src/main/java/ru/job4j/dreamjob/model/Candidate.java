@@ -7,13 +7,15 @@ public class Candidate {
     private Integer id;
     private String name;
     private String description;
-    private LocalDateTime creationDate;
+    private LocalDateTime creationDate = LocalDateTime.now();
+
+    public Candidate() {
+    }
 
     public Candidate(Integer id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.creationDate = LocalDateTime.now();
     }
 
     public Integer getId() {
@@ -42,6 +44,10 @@ public class Candidate {
 
     public LocalDateTime getCreationDate() {
         return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 
     @Override
