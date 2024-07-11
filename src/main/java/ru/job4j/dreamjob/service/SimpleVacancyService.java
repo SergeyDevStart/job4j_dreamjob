@@ -2,6 +2,7 @@ package ru.job4j.dreamjob.service;
 
 import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Service;
+import ru.job4j.dreamjob.dto.FileDto;
 import ru.job4j.dreamjob.model.Vacancy;
 import ru.job4j.dreamjob.repository.VacancyRepository;
 
@@ -12,24 +13,44 @@ import java.util.Optional;
 @ThreadSafe
 public class SimpleVacancyService implements VacancyService {
     private final VacancyRepository vacancyRepository;
+    private final FileService fileService;
 
-    public SimpleVacancyService(VacancyRepository vacancyRepository) {
+    public SimpleVacancyService(VacancyRepository vacancyRepository, FileService fileService) {
         this.vacancyRepository = vacancyRepository;
+        this.fileService = fileService;
     }
 
     @Override
-    public Vacancy save(Vacancy vacancy) {
+    public Vacancy save(Vacancy vacancy, FileDto image) {
+        saveNewFile(vacancy, image);
         return vacancyRepository.save(vacancy);
+    }
+
+    private void saveNewFile(Vacancy vacancy, FileDto fileDto) {
+        var file = fileService.save(fileDto);
+        vacancy.setFileId(file.getId());
     }
 
     @Override
     public void deleteById(int id) {
-        vacancyRepository.deleteById(id);
+        var vacancyOptional = findById(id);
+        if (vacancyOptional.isPresent()) {
+            vacancyRepository.deleteById(id);
+            fileService.deleteById(vacancyOptional.get().getFileId());
+        }
     }
 
     @Override
-    public boolean update(Vacancy vacancy) {
-        return vacancyRepository.update(vacancy);
+    public boolean update(Vacancy vacancy, FileDto image) {
+        boolean isNewFileEmpty = image.getContent().length == 0;
+        if (isNewFileEmpty) {
+            return vacancyRepository.update(vacancy);
+        }
+        var oldFileId = vacancy.getFileId();
+        saveNewFile(vacancy, image);
+        var isUpdated = vacancyRepository.update(vacancy);
+        fileService.deleteById(oldFileId);
+        return isUpdated;
     }
 
     @Override

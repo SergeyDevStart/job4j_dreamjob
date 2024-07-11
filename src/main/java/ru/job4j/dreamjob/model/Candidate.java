@@ -8,14 +8,18 @@ public class Candidate {
     private String name;
     private String description;
     private LocalDateTime creationDate = LocalDateTime.now();
+    private Integer cityId;
+    private Integer fileId;
 
     public Candidate() {
     }
 
-    public Candidate(Integer id, String name, String description) {
+    public Candidate(Integer id, String name, String description, Integer cityId, Integer fileId) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.fileId = fileId;
+        this.cityId = cityId;
     }
 
     public Integer getId() {
@@ -48,6 +52,22 @@ public class Candidate {
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public Integer getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
+    }
+
+    public Integer getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(Integer fileId) {
+        this.fileId = fileId;
     }
 
     @Override
