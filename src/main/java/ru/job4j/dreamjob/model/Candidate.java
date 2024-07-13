@@ -32,6 +32,16 @@ public class Candidate {
         this.cityId = cityId;
     }
 
+    public Candidate(Integer id, String name, String description,
+                     LocalDateTime creationDate, Integer cityId, Integer fileId) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.creationDate = creationDate;
+        this.cityId = cityId;
+        this.fileId = fileId;
+    }
+
     public Integer getId() {
         return id;
     }
