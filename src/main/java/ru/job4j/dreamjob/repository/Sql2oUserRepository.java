@@ -28,14 +28,12 @@ public class Sql2oUserRepository implements UserRepository {
                     .addParameter("email", user.getEmail())
                     .addParameter("name", user.getName())
                     .addParameter("password", user.getPassword());
-            try {
-                user.setId(query.executeUpdate().getKey(Integer.class));
-            } catch (Exception e) {
-                LOG.error(e.getMessage());
-                return Optional.empty();
-            }
+            user.setId(query.executeUpdate().getKey(Integer.class));
             return Optional.of(user);
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
         }
+        return Optional.empty();
     }
 
     @Override
