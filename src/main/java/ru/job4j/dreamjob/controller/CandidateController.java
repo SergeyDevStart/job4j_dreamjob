@@ -27,26 +27,15 @@ public class CandidateController {
         this.cityService = cityService;
     }
 
-    private void authentication(Model model, HttpSession session) {
-        var user = (User) session.getAttribute("user");
-        if (user == null) {
-            user = new User();
-            user.setName("Гость");
-        }
-        model.addAttribute("user", user);
-    }
-
     @GetMapping
-    public String getAll(Model model, HttpSession session) {
+    public String getAll(Model model) {
         model.addAttribute("candidates", candidateService.findAll());
-        authentication(model, session);
         return "candidates/list";
     }
 
     @GetMapping("/create")
-    public String getCreationPage(Model model, HttpSession session) {
+    public String getCreationPage(Model model) {
         model.addAttribute("cities", cityService.findAll());
-        authentication(model, session);
         return "candidates/create";
     }
 
@@ -62,7 +51,7 @@ public class CandidateController {
     }
 
     @GetMapping("/{id}")
-    public String getById(Model model, HttpSession session, @PathVariable("id") int id) {
+    public String getById(Model model, @PathVariable("id") int id) {
         var candidateOptional = candidateService.findById(id);
         if (candidateOptional.isEmpty()) {
             model.addAttribute("message", "Резюме с указанным id не найдено");
@@ -70,7 +59,6 @@ public class CandidateController {
         }
         model.addAttribute("cities", cityService.findAll());
         model.addAttribute("candidate", candidateOptional.get());
-        authentication(model, session);
         return "candidates/one";
     }
 
@@ -90,13 +78,12 @@ public class CandidateController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(Model model, HttpSession session, @PathVariable("id") int id) {
+    public String delete(Model model, @PathVariable("id") int id) {
         if (candidateService.findById(id).isEmpty()) {
             model.addAttribute("message", "Резюме с указанным id не найдено");
             return "errors/404";
         }
         candidateService.deleteById(id);
-        authentication(model, session);
         return "redirect:/candidates";
     }
 }
